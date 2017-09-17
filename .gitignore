@@ -1,0 +1,4 @@
+*.cache
+.syntastic_c_config
+
+
