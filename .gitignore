@@ -1,4 +1,13 @@
+aclocal.m4
+m4
+
+configure
+*.guess
+*.sub
+
+
 *.cache
 .syntastic_c_config
+*.in
 
 

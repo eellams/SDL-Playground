@@ -9,112 +9,35 @@
 /*#include "map.h"*/
 #include "video.h"
 
-/*#define SCREEN_WIDTH 20*32
-#define SCREEN_HEIGHT 20*32*/
-
+#include "macros.h"
 
 static int finished;
 
 int event_loop(void);
 
+int update(void);
+int render(void);
 
-/*int main(int argc, char* argv[]) {
-    SDL_Window *window = NULL;
-    SDL_Renderer *renderer = NULL;
-    SDL_Texture *texture = NULL;
-    SDL_Event event;
-    SDL_Rect rect;
-
-    int i;
-
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        fprintf(stderr, "could not initialise sdl2: %s\n", SDL_GetError());
+int main(int argc, char* argv[]) {
+    PRINTF_ERROR("%s", "Poot poot\n");
+    if (video_initialise() < 0)
+    {
+        puts("Error initialising videos, exiting.\n");
         return 1;
     }
-
-    srand(time(NULL));
-
-    window = SDL_CreateWindow(
-            "Hello SDL2",
-            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            SCREEN_WIDTH, SCREEN_HEIGHT,
-            SDL_WINDOW_SHOWN
-        );
-
-    if (window == NULL) {
-        fprintf(stderr, "could not create window: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    //map_initialise(20,20);
-    finished = 0;
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = 10;
-    rect.h = 20;
 
     while (!finished)
     {
-        event_loop();
+        /* If an error while updating */
+        if (update() < 0) goto main_cleanup;
 
-        // Set background colour
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        /* If an error occurred while rendering */
+        if (render() < 0) goto main_cleanup;
 
-        //map_draw(renderer);
-
-
-        SDL_RenderPresent(renderer);
         SDL_Delay(10);
     }
-    SDL_DestroyWindow(window);
-    SDL_Quit();
 
-    //map_cleanup();
-
-    return 0;
-}*/
-
-int init_video(void)
-{
-    int return_resp;
-
-    return_resp = video_initialise();
-
-    switch(return_resp)
-    {
-    case VIDEO_INIT_SUCCESS:
-        goto rtn_success;
-    case VIDEO_INIT_ERROR_SDL_ERROR:
-        fprintf(stderr, "Error initialising SDL\n");
-        break;
-    case VIDEO_INIT_ERROR_WINDOW:
-        fprintf(stderr, "Error opening window\n");
-        break;
-    case VIDEO_INIT_ERROR_RENDERER:
-        fprintf(stderr, "Error creating renderer\n");
-        break;
-    default:
-        fprintf(stderr, "Unknown error initialising video\n");
-        break;
-    }
-
-    return 1;
-
-rtn_success:
-    return 0;
-}
-
-int main(int argc, char* argv[]) {
-    if (init_video() != 0)
-    {
-        return 1;
-    }
-
-    SDL_Delay(1000);
+main_cleanup:
 
     video_destroy();
 
@@ -122,7 +45,7 @@ int main(int argc, char* argv[]) {
 }
 
 
-// Process SDL events
+/* Process SDL events */
 int event_loop(void)
 {
     SDL_Event event;
@@ -154,6 +77,22 @@ int event_loop(void)
         }
     }
 
+    return 0;
+}
+
+/* Update everything */
+int update(void)
+{
+    if(event_loop() < 0)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+/* Render everything */
+int render(void)
+{
     return 0;
 }
 

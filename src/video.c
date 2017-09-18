@@ -1,4 +1,5 @@
 #include "video.h"
+#include "macros.h"
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -8,7 +9,9 @@ int video_initialise(void)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        return VIDEO_INIT_ERROR_SDL_ERROR;
+
+        printf("SDL_Init failed: %s\n", SDL_GetError());
+        return -1;
     }
 
     window = SDL_CreateWindow(
@@ -20,24 +23,38 @@ int video_initialise(void)
 
     if (window == NULL)
     {
-        return VIDEO_INIT_ERROR_WINDOW;
+        return -1;
     }
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     if (renderer == NULL)
     {
-        return VIDEO_INIT_ERROR_RENDERER;
+        return -1;
     }
 
-    return VIDEO_INIT_SUCCESS;
+    if (SDL_SetRenderDrawColor(renderer,
+                VIDEO_BACKGROUND_R,
+                VIDEO_BACKGROUND_G,
+                VIDEO_BACKGROUND_B, 255) < 0)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
-int video_destroy(void)
+void video_destroy(void)
 {
     SDL_DestroyWindow(window);
     SDL_Quit();
 
+    return 0;
+}
+
+int video_clear_screen(void)
+{
+    
     return 0;
 }
 
