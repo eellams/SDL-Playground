@@ -15,6 +15,7 @@ int video_initialise(void);
 void video_destroy(void);
 
 int video_clear_screen(void);
+void video_present(void);
 
 #endif
 

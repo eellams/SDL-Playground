@@ -8,11 +8,11 @@
  *  according to https://gcc.gnu.org/onlinedocs/gcc-4.8.1/gcc/Function-Names.html
  */
 #if __STDC_VERSION__ < 199901L
-# if __GNUC__ >= 2
+/*# if __GNUC__ >= 2
 #  define __func__ __FUNCTION__
-# else
+# else*/
 #  define __func__ "<unknown>"
-# endif
+/*# endif*/
 #endif
 
 /* Set report level (each includes all below):
@@ -25,13 +25,12 @@
 #define REPORT_LEVEL 3
 
 #define PRINTF_LEVEL(level, file, tag, fmt,  msg) \
-    do { if (REPORT_LEVEL >= level) fprintf(file, tag ":%s:%d%s(): " fmt, __FILE__, \
+    do { if (REPORT_LEVEL >= level) fprintf(file, tag ":%s:%d:%s(): " fmt, __FILE__, \
             __LINE__, __func__, msg); } while (0)
-
-#define  printf_error   (fmt, msg)  PRINTF_LEVEL(1, stderr, "ERROR", fmt, msg)
-#define  printf_warning (fmt, msg)  PRINTF_LEVEL(2, stderr, "WARN",  fmt, msg)
-#define  printf_info    (fmt, msg)  PRINTF_LEVEL(3, stderr, "INFO",  fmt, msg)
-#define  printf_debug   (fmt, msg)  PRINTF_LEVEL(4, stderr, "DEBUG", fmt, msg)
+#define  printf_error(fmt, msg)   PRINTF_LEVEL(1, stderr, "ERROR", fmt, msg)
+#define  printf_warning(fmt, msg) PRINTF_LEVEL(2, stderr, "WARN",  fmt, msg)
+#define  printf_info(fmt, msg)    PRINTF_LEVEL(3, stderr, "INFO",  fmt, msg)
+#define  printf_debug(fmt, msg)   PRINTF_LEVEL(4, stderr, "DEBUG", fmt, msg)
 
 #endif
 

@@ -19,7 +19,7 @@ int update(void);
 int render(void);
 
 int main(int argc, char* argv[]) {
-    PRINTF_ERROR("%s", "Poot poot\n");
+    printf_info("%s", "Startup\n");
     if (video_initialise() < 0)
     {
         puts("Error initialising videos, exiting.\n");
@@ -41,6 +41,7 @@ main_cleanup:
 
     video_destroy();
 
+    printf_info("%s", "Exiting\n");
     return 0;
 }
 
@@ -93,6 +94,12 @@ int update(void)
 /* Render everything */
 int render(void)
 {
+    /* Clear the screen */
+    if (video_clear_screen() < 0) return -1;
+
+    /* Present the renderer(s) when ready */
+    video_present();
+
     return 0;
 }
 

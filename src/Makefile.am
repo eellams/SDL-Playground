@@ -1,6 +1,6 @@
-AM_CFLAGS = -Wall -pedantic -std=gnu90 -Wno-comment 
+AM_CFLAGS = -Wall -pedantic -std=c90
 AM_LDFLAGS = 
-LDADD = -lSDL2
+LDADD = -lSDL2 -lGL -lGLEW
 
 lib_LTLIBRARIES = libmap.la libvideo.la
 
@@ -18,6 +18,4 @@ gridpathfinding_LDADD = $(lib_LTLIBRARIES) $(LDADD)
 gridpathfinding_static_SOURCES = main.c
 gridpathfinding_static_LDADD = $(lib_LTLIBRARIES) $(LDADD)
 gridpathfinding_static_LDFLAGS = -static
-
-
 
