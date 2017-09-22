@@ -1,6 +1,6 @@
 AM_CFLAGS = -Wall -pedantic -std=c90
 AM_LDFLAGS = 
-LDADD = -lSDL2 -lGL -lGLEW
+LDADD = -lSDL2 -lGL -lGLEW -lGLU -lglut -lm
 
 lib_LTLIBRARIES = libmap.la libvideo.la
 

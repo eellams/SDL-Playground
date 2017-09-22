@@ -1,5 +1,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_opengl.h>
+
+#include <GL/gl.h>
 
 #include <time.h>
 #include <stdio.h>
@@ -11,6 +14,7 @@
 
 #include "macros.h"
 
+
 static int finished;
 
 int event_loop(void);
@@ -18,8 +22,61 @@ int event_loop(void);
 int update(void);
 int render(void);
 
+void draw_cube(void)
+{
+    glBegin(GL_QUADS);
+
+    /* Cube Top */
+    glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+    glVertex3f(-1.0f, 1.0f, 1.0f);
+    glVertex3f(-1.0f, 1.0f, -1.0f);
+    glVertex3f(1.0f, 1.0f, -1.0f);
+    glVertex3f(1.0f, 1.0f, 1.0f);
+
+
+    /* Cube Bottom */
+    glColor4f(1.0f, 0.5f, 0.0f, 1.0f);
+    glVertex3f(-1.0f, -1.0f, 1.0f);
+    glVertex3f(-1.0f, -1.0f, -1.0f);
+    glVertex3f(1.0f, -1.0f, -1.0f);
+    glVertex3f(1.0f, -1.0f, 1.0f);
+
+    /* Cube Front */
+    glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+    glVertex3f(-1.0f, 1.0f, 1.0f);
+    glVertex3f(1.0f, 1.0f, 1.0f);
+    glVertex3f(1.0f, -1.0f, 1.0f);
+    glVertex3f(-1.0f, -1.0f, 1.0f);
+
+    /* Cube Back */
+    glColor4f(0.0f, 1.0f, 0.5f, 1.0f);
+    glVertex3f(-1.0f, 1.0f, -1.0f);
+    glVertex3f(1.0f, 1.0f, -1.0f);
+    glVertex3f(1.0f, -1.0f, -1.0f);
+    glVertex3f(-1.0f, -1.0f, -1.0f);
+
+    /* Cube Left Side */
+    glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+    glVertex3f(-1.0f, 1.0f, -1.0f);
+    glVertex3f(-1.0f, 1.0f, 1.0f);
+    glVertex3f(-1.0f, -1.0f, 1.0f);
+    glVertex3f(-1.0f, -1.0f, -1.0f);
+
+    /* Cube Right Side */
+    glColor4f(0.15f, 0.25f, 0.75f, 1.0f);
+    glVertex3f(1.0f, 1.0f, -1.0f);
+    glVertex3f(1.0f, 1.0f, 1.0f);
+    glVertex3f(1.0f, -1.0f, 1.0f);
+    glVertex3f(1.0f, -1.0f, -1.0f);
+
+
+    glEnd();
+    glLoadIdentity();
+}
+
 int main(int argc, char* argv[]) {
     printf_info("%s", "Startup\n");
+
     if (video_initialise() < 0)
     {
         puts("Error initialising videos, exiting.\n");
@@ -34,6 +91,8 @@ int main(int argc, char* argv[]) {
         /* If an error occurred while rendering */
         if (render() < 0) goto main_cleanup;
 
+
+        /* TODO should probably implement a better frame limiter */
         SDL_Delay(10);
     }
 
@@ -61,6 +120,14 @@ int event_loop(void)
                 {
                     case SDLK_ESCAPE:
                         finished = 1;
+                        break;
+
+                    case SDLK_1:
+                        video_set_ortho();
+                        break;
+
+                    case SDLK_2:
+                        video_set_perspective();
                         break;
                 }
                 break;
@@ -94,10 +161,20 @@ int update(void)
 /* Render everything */
 int render(void)
 {
+    static GLfloat rotation = 0.0;
+
     /* Clear the screen */
     if (video_clear_screen() < 0) return -1;
 
-    /* Present the renderer(s) when ready */
+    /* Set camera location etc. */
+    if (video_set_camera() < 0) return -1;
+
+
+    /* Show something interesting */
+    glRotatef(rotation, 1.0f, 2.0f, 3.0f);
+    rotation -= 0.5f;
+    draw_cube();
+       
     video_present();
 
     return 0;
